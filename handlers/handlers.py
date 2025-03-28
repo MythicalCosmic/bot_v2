@@ -3,7 +3,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command, StateFilter
 from .states import UserStates
-from config.settings import get_translation, CLICK_TOKEN, PAYME_TOKEN, ADMIN_ID, LINK_CHANNEL_ID
+from config.settings import get_translation, CLICK_TOKEN, PAYME_TOKEN, ADMIN_ID, LINK_CHANNEL_ID, VIDEO_MESSAGE_ID, VIDEO_CHANNEL_ID
 from utils.utils import set_user_state, format_error, generate_one_time_link, add_to_payment_movements, format_payment_success
 from keyboards.keyboards import *
 
@@ -14,6 +14,7 @@ async def start_command(message: Message, state: FSMContext, bot: Bot):
     try:
         user_id = message.from_user.id
         set_user_state(user_id, UserStates.start.state)
+        await bot.forward_message(chat_id=message.chat.id, from_chat_id=VIDEO_CHANNEL_ID, message_id=VIDEO_MESSAGE_ID)
         await message.reply(
             get_translation('start_message'),
             reply_markup=main_menu_keyboard(),
