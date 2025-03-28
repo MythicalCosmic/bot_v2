@@ -18,7 +18,9 @@ async def webhook(update: dict):
 async def start_webhook():
     logging.info("Starting bot in webhook mode...")
     await bot.set_webhook(WEBHOOK_URL)
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+    server = uvicorn.Server(config)
+    await server.serve()
 
 async def start_polling():
     logging.info("Starting bot in polling mode...")
@@ -33,5 +35,14 @@ async def main():
         await start_polling()
 
 if __name__ == "__main__":
+    import asyncio
+
     logging.info("Bot is starting...")
-    asyncio.run(main())
+
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+    loop.run_until_complete(main())
