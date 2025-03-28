@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env
+.env.local
+
+
+
+
+# Logs and debugging
+
+*.log
+
+# Django specific
+*.sqlite3
+/media/
+/static/
+
+# Build files
+build/
+dist/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Ignore compiled files
+*.so
+*.o
+*.out
+
+# FastAPI specific
+__pypackages__/
