@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
 
+FREE_KNOWLEDGE = "🎁 BEPUL BILIMLAR"
 JOIN_PREMIUM_CHANNEL = "🌟 Yopiq kanalga qo'shilish"
 MARKETING_SERVICE = "📣 Marketing xizmati"
 CONTACT_DEVELOPER = "📞💻 Dasturchi bilan bog‘lanish"
@@ -17,6 +18,7 @@ SPECIALIST_CONTACT = "💬 Mutaxasisga yozish"
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
+            [KeyboardButton(text=FREE_KNOWLEDGE)],
             [KeyboardButton(text=JOIN_PREMIUM_CHANNEL), KeyboardButton(text=BOOK_CONSULTATION)],
             [KeyboardButton(text=CONTACT_DEVELOPER), KeyboardButton(text=MARKETING_SERVICE)]
         ],

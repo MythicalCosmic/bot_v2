@@ -7,14 +7,16 @@ load_dotenv(override=True)
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
+ADMINS_GROUP_ID = os.getenv("ADMINS_GROUP_ID")
 
 CLICK_TOKEN = os.getenv("CLICK_TOKEN")
 PAYME_TOKEN = os.getenv("PAYME_TOKEN")
 
 LINK_CHANNEL_ID = os.getenv("LINK_CHANNEL_ID")
 
-VIDEO_CHANNEL_ID = os.getenv("VIDEO_CHANNEL_ID")
+SOURCE_CHANNEL_ID = os.getenv("SOURCE_CHANNEL_ID")
 VIDEO_MESSAGE_ID = os.getenv("VIDEO_MESSAGE_ID")
+PDF_MESSAGE_ID = os.getenv("PDF_MESSAGE_ID")
 
 TIMEZONE = os.getenv("TIMEZONE")
 

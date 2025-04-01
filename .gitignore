@@ -40,3 +40,6 @@ docker-compose.override.yml
 
 # FastAPI specific
 __pypackages__/
+
+#Mac
+.DS_Store

@@ -1,11 +1,15 @@
+version: '3.8'  
 
-
-services:
+services:  
   bot:
-    build: .
-    image: telegram-bot
-    env_file:
+    container_name: bot
+    build: .  
+    image: telegram-bot  
+    env_file:  
       - .env  
-    volumes:
-      - .:/app 
-    restart: unless-stopped
+    volumes:  
+      - ./:/app  # Точное монтирование  
+    restart: unless-stopped  
+    # Опциональные улучшения  
+    stdin_open: true  
+    tty: true
