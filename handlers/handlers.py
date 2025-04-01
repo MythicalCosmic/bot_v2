@@ -141,7 +141,7 @@ async def handle_consultation(message: Message, bot: Bot):
     try:
         await message.reply(
             get_translation('consultation_message'),
-            reply_markup=main_menu_keyboard(),
+            reply_markup=marketing_contact_button(),
             parse_mode='HTML'
         )
     except Exception as e:
@@ -163,11 +163,12 @@ async def handle_smm(message: Message, bot: Bot):
     try:
         await message.reply(
             get_translation('smm_message'),
-            reply_markup=main_menu_keyboard(),
+            reply_markup=marketing_contact_button(),
             parse_mode='HTML'
         )
     except Exception as e:
         await bot.send_message(ADMIN_ID, format_error("SMM handler", message, e))
+
 @router.message(lambda message: message.text == FREE_KNOWLEDGE, StateFilter(UserStates.start))
 async def handle_free(message: Message, bot: Bot):
     try:
@@ -175,6 +176,17 @@ async def handle_free(message: Message, bot: Bot):
         await message.answer(get_translation('free_knowledge_full_message'), reply_to_message_id=send.message_id, parse_mode='HTML')
     except Exception as e:
         await bot.send_message(ADMIN_ID, format_error("FREE MESAGE handler", message, e))
+
+@router.message(Command("send"))
+async def reply_copy_handler(message: Message):
+    if message.reply_to_message:
+        await message.bot.copy_message(
+            chat_id=message.chat.id,
+            from_chat_id=message.chat.id,
+            message_id=message.reply_to_message.message_id
+        )
+    else:
+        await message.answer("null")
 
 @router.message(StateFilter(UserStates.start, UserStates.warning, UserStates.payment_type))
 async def handle_unrecognized_input(message: Message, state: FSMContext):

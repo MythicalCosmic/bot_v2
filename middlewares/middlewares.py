@@ -7,6 +7,7 @@ from handlers.states import UserStates
 
 class UserRegistrationMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: Message, data: dict):
+        
         user_id = event.from_user.id
         first_name = event.from_user.first_name
         last_name = event.from_user.last_name
@@ -26,3 +27,14 @@ class UserRegistrationMiddleware(BaseMiddleware):
             return 
         
         return await handler(event, data)
+
+class PrivateChatMiddleware(BaseMiddleware):
+    async def __call__(self, handler, event,  data: dict):
+        if event.chat.type != "private":
+            await event.answer("⚠️ <b>Men faqat shaxsiy chatda ishlayman</b>", parse_mode="HTML")
+            return
+        
+        
+        return await handler(event, data)
+    
+

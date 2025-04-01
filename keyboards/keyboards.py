@@ -15,6 +15,9 @@ BOOK_CONSULTATION = "💬 Konsultatsiyaga yozilish"
 SPECIALIST_CONTACT = "💬 Mutaxasisga yozish"
 
 
+URL = "https://telegram.org/getresult_uz"
+
+
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[
@@ -68,7 +71,7 @@ def back_button() -> ReplyKeyboardMarkup:
 def marketing_contact_button() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text=SPECIALIST_CONTACT, url="https://telegram.org/anarkulova_malika")]
+            [InlineKeyboardButton(text=SPECIALIST_CONTACT, url=URL)]
         ]
     )
 
@@ -76,6 +79,6 @@ def marketing_contact_button() -> InlineKeyboardMarkup:
 def consultation_button() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text=BOOK_CONSULTATION, url="https://telegram.org/anarkulova_malika")]
+            [InlineKeyboardButton(text=BOOK_CONSULTATION, url=URL)]
         ]
     )

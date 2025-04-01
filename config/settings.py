@@ -51,7 +51,11 @@ def get_translation(key: str, language: str = BOT_LANGUAGE) -> str:
     return LANGUAGES.get(language, LANGUAGES["uz"]).get(key, key)
 
 
-logging.basicConfig(
+
+
+
+if DEBUG:
+    logging.basicConfig(
     level=getattr(logging, DEBUG_LEVEL, logging.INFO),
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
@@ -59,5 +63,4 @@ logging.basicConfig(
         logging.StreamHandler()
     ],
 )
-
 logging.info("Configuration loaded successfully.")

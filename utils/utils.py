@@ -87,12 +87,12 @@ def format_payment_success(message, total_price, payment_type, generated_link, p
     formatted_price = f"{total_price:,.2f}"
     return (
         f"✅ Muvaffaqiyatli to'lov qabul qilindi!\n\n"
+        f"To'lov ID: #{payment_movement_id}\n"
         f"User ID: {message.from_user.id}\n"
         f"Username: @{message.from_user.username or ''}\n"
         f"FIO: {message.from_user.first_name} {message.from_user.last_name or ''}\n"
         f"Summa: {formatted_price} {message.successful_payment.currency}\n"
-        f"To'lov usuli: {payment_type}\n"
-        f"To'lov ID: {payment_movement_id}\n"
+        f"To'lov usuli: #{payment_type}\n"
         f"Link: {generated_link}\n"
         f"Sana: {current_time}\n"
     )

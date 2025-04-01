@@ -12,6 +12,7 @@ if not BOT_TOKEN:
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
+dp.message.middleware(PrivateChatMiddleware())
 dp.message.middleware(UserRegistrationMiddleware())
 dp.include_router(router)
 

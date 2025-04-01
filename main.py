@@ -17,7 +17,6 @@ async def webhook(update: dict):
 
 async def start_webhook():
     logging.info("Starting bot in webhook mode...")
-    await bot.set_webhook(WEBHOOK_URL)
     config = uvicorn.Config(app, host="0.0.0.0", port=8000)
     server = uvicorn.Server(config)
     await server.serve()
