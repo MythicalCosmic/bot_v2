@@ -5,6 +5,8 @@ from fastapi import FastAPI
 from aiogram.types import Update
 from config.config import bot, dp
 from config.settings import WEBHOOK, WEBHOOK_URL
+import os
+import stat
 
 app = FastAPI()
 
@@ -16,27 +18,32 @@ async def webhook(update: dict):
     return {"status": "ok"}
 
 
-async def start_webhook():
+def start_webhook():
     logging.info("Starting bot in webhook mode...")
+
+    # Подготовка socket
+    socket_path = '/app/malika_marketing_bot.sock'
+
+    # Удаляем существующий сокет, если есть
+    if os.path.exists(socket_path):
+        os.unlink(socket_path)
+
     config = uvicorn.Config(
         app,
-        uds='/app/malika_marketing_bot.sock',
-        workers=2,
+        uds=socket_path,
+        workers=1,
         limit_max_requests=1000,
-        timeout_keep_alive=120
+        timeout_keep_alive=120,
+        log_level="info"
     )
-    import os
-    import stat
 
     server = uvicorn.Server(config)
 
-    # Создаем socket перед запуском сервера
-    await server.startup()
+    # Установка прав на socket
+    server.run()
 
-    # Устанавливаем максимально открытые права
-    os.chmod('/app/malika_marketing_bot.sock', stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
-    await server.serve()
+    # Если сервер завершился, применяем права
+    os.chmod(socket_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
 
 async def start_polling():
@@ -48,7 +55,10 @@ async def start_polling():
 async def main():
     logging.info(f"Bot is running in {'WEBHOOK' if WEBHOOK else 'POLLING'} mode.")
     if WEBHOOK:
-        await start_webhook()
+        # Используем многопоточность для запуска webhook
+        import threading
+        webhook_thread = threading.Thread(target=start_webhook)
+        webhook_thread.start()
     else:
         await start_polling()
 
