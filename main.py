@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import uvicorn
 import os
 import sys
@@ -17,7 +18,11 @@ async def webhook(update: dict):
     return {"status": "ok"}
 
 
-def create_socket_with_max_permissions(socket_path):
+async def start_webhook():
+    logging.info("Starting bot in webhook mode...")
+    socket_path = '/app/malika_marketing_bot.sock'
+
+    # Удаление существующего сокета
     if os.path.exists(socket_path):
         os.unlink(socket_path)
 
@@ -29,20 +34,19 @@ def create_socket_with_max_permissions(socket_path):
         timeout_keep_alive=120,
         log_level="info"
     )
-
     server = uvicorn.Server(config)
 
     try:
-        server.run()
-    except Exception as e:
-        logging.error(f"Ошибка при запуске сервера: {e}")
-        sys.exit(1)
+        # Запуск сервера
+        await server.startup()
 
-    try:
-        os.chmod(socket_path, 0o777)  # Права чтения, записи и выполнения для всех
-        logging.info(f"Установлены права 777 для {socket_path}")
+        # Установка прав на сокет
+        os.chmod(socket_path, 0o777)
+
+        await server.serve()
     except Exception as e:
-        logging.error(f"Не удалось установить права для socket: {e}")
+        logging.error(f"Ошибка при запуске webhook: {e}")
+        raise
 
 
 async def start_polling():
@@ -52,31 +56,20 @@ async def start_polling():
 
 
 async def main():
-    socket_path = '/var/www/@Marketing_by_Malika_bot/malika_marketing_bot.sock'
-
     logging.info(f"Bot is running in {'WEBHOOK' if WEBHOOK else 'POLLING'} mode.")
-
     if WEBHOOK:
-        import threading
-        webhook_thread = threading.Thread(
-            target=create_socket_with_max_permissions,
-            args=(socket_path,)
-        )
-        webhook_thread.start()
+        await start_webhook()
     else:
         await start_polling()
 
 
 if __name__ == "__main__":
+    import asyncio
     import logging
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler('/var/www/@Marketing_by_Malika_bot/bot.log'),
-            logging.StreamHandler()
-        ]
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
     logging.info("Bot is starting...")
 
