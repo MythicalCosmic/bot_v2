@@ -1,30 +1,23 @@
 import asyncio
-import logging
 import uvicorn
+import os
+import sys
 from fastapi import FastAPI
 from aiogram.types import Update
 from config.config import bot, dp
 from config.settings import WEBHOOK, WEBHOOK_URL
-import os
-import stat
 
 app = FastAPI()
 
 
-@app.post("/webhook")
+@app.post("/Marketing_by_Malika_bot")
 async def webhook(update: dict):
     tg_update = Update(**update)
     await dp.feed_update(bot, tg_update)
     return {"status": "ok"}
 
 
-def start_webhook():
-    logging.info("Starting bot in webhook mode...")
-
-    # Подготовка socket
-    socket_path = '/app/malika_marketing_bot.sock'
-
-    # Удаляем существующий сокет, если есть
+def create_socket_with_max_permissions(socket_path):
     if os.path.exists(socket_path):
         os.unlink(socket_path)
 
@@ -39,11 +32,17 @@ def start_webhook():
 
     server = uvicorn.Server(config)
 
-    # Установка прав на socket
-    server.run()
+    try:
+        server.run()
+    except Exception as e:
+        logging.error(f"Ошибка при запуске сервера: {e}")
+        sys.exit(1)
 
-    # Если сервер завершился, применяем права
-    os.chmod(socket_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    try:
+        os.chmod(socket_path, 0o777)  # Права чтения, записи и выполнения для всех
+        logging.info(f"Установлены права 777 для {socket_path}")
+    except Exception as e:
+        logging.error(f"Не удалось установить права для socket: {e}")
 
 
 async def start_polling():
@@ -53,23 +52,31 @@ async def start_polling():
 
 
 async def main():
+    socket_path = '/var/www/@Marketing_by_Malika_bot/malika_marketing_bot.sock'
+
     logging.info(f"Bot is running in {'WEBHOOK' if WEBHOOK else 'POLLING'} mode.")
+
     if WEBHOOK:
-        # Используем многопоточность для запуска webhook
         import threading
-        webhook_thread = threading.Thread(target=start_webhook)
+        webhook_thread = threading.Thread(
+            target=create_socket_with_max_permissions,
+            args=(socket_path,)
+        )
         webhook_thread.start()
     else:
         await start_polling()
 
 
 if __name__ == "__main__":
-    import asyncio
     import logging
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('/var/www/@Marketing_by_Malika_bot/bot.log'),
+            logging.StreamHandler()
+        ]
     )
     logging.info("Bot is starting...")
 
