@@ -43,4 +43,4 @@ __pypackages__/
 
 #Mac
 .DS_Store
-*.db
+database.db
