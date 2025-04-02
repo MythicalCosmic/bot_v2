@@ -18,10 +18,10 @@ async def webhook(update: dict):
     return {"status": "ok"}
 
 
-async def start_webhook():
-    logging.info("Starting bot in webhook mode...")
-    socket_path = '/app/malika_marketing_bot.sock'
-
+def run_webhook_server(socket_path):
+    """
+    Функция для запуска webhook сервера в отдельном потоке
+    """
     # Удаление существующего сокета
     if os.path.exists(socket_path):
         os.unlink(socket_path)
@@ -34,19 +34,30 @@ async def start_webhook():
         timeout_keep_alive=120,
         log_level="info"
     )
-    server = uvicorn.Server(config)
 
     try:
-        # Запуск сервера
-        await server.startup()
+        server = uvicorn.Server(config)
+        server.run()
 
         # Установка прав на сокет
         os.chmod(socket_path, 0o777)
-
-        await server.serve()
     except Exception as e:
         logging.error(f"Ошибка при запуске webhook: {e}")
-        raise
+        sys.exit(1)
+
+
+async def start_webhook():
+    logging.info("Starting bot in webhook mode...")
+    socket_path = '/app/malika_marketing_bot.sock'
+
+    # Запуск сервера в отдельном потоке
+    import threading
+    webhook_thread = threading.Thread(
+        target=run_webhook_server,
+        args=(socket_path,),
+        daemon=True  # Поток завершится вместе с основной программой
+    )
+    webhook_thread.start()
 
 
 async def start_polling():
@@ -61,6 +72,10 @@ async def main():
         await start_webhook()
     else:
         await start_polling()
+
+    # Бесконечное ожидание, чтобы поток webhook не завершился
+    while True:
+        await asyncio.sleep(3600)
 
 
 if __name__ == "__main__":
