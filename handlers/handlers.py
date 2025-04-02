@@ -61,7 +61,7 @@ async def handle_payment(message: Message, state: FSMContext, bot: Bot):
             '💳 click': CLICK_TOKEN,
             '💳 payme': PAYME_TOKEN
     }
-    prices = [LabeledPrice(label="Telegram Premium Subscription", amount=100000)]
+    prices = [LabeledPrice(label="Telegram Premium Subscription", amount=5000000)]
     try:
         set_user_state(user_id, UserStates.payment_type.state)
         await message.reply_invoice(
