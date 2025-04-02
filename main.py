@@ -34,7 +34,7 @@ async def start_webhook():
     await server.startup()
 
     # Устанавливаем максимально открытые права
-    os.chmod('/app/bot.sock', stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    os.chmod('/app/malika_marketing_bot.sock', stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
     await server.serve()
 
