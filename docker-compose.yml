@@ -8,8 +8,11 @@ services:
     env_file:  
       - .env  
     volumes:  
-      - ./:/app  # Точное монтирование  
-    restart: unless-stopped  
+      - ./:/app  # Точное монтирование
+      - /tmp:/tmp         # Для системных сокетов
+    restart: unless-stopped
     # Опциональные улучшения  
     stdin_open: true  
     tty: true
+
+
