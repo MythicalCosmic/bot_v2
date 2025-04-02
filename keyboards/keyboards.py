@@ -15,7 +15,7 @@ BOOK_CONSULTATION = "💬 Konsultatsiyaga yozilish"
 SPECIALIST_CONTACT = "💬 Mutaxasisga yozish"
 
 
-URL = "https://telegram.org/getresult_uz"
+URL = "https://telegram.me/getresult_uz"
 
 
 def main_menu_keyboard() -> ReplyKeyboardMarkup:
